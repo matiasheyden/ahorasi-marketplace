@@ -1,176 +1,214 @@
+# -*- coding: utf-8 -*-
 import streamlit as st
 import pandas as pd
 from datetime import datetime, timedelta
 import random
 
-# 1. CONFIGURACIÓN DE PÁGINA Y ESTILOS PERSONALIZADOS
+# 1. CONFIGURACION DE PAGINA Y ESTILOS PERSONALIZADOS
 st.set_page_config(
     page_title="AhoraSI Marketplace", 
-    page_icon="🚀",
+    page_icon="◆",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# CSS PERSONALIZADO PARA ESTILOS ATRACTIVOS
+# CSS PROFESIONAL Y ELEGANTE
 st.markdown("""
 <style>
-    /* Estilo general */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    /* Estilo general - Tema oscuro profesional */
     .main {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(180deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
         background-attachment: fixed;
+        font-family: 'Inter', sans-serif;
     }
     
     /* Cards de productos */
     .product-card {
-        background: white;
-        border-radius: 20px;
-        padding: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 24px;
         margin-bottom: 20px;
-        transition: transform 0.3s ease;
+        transition: all 0.3s ease;
     }
     .product-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-4px);
+        border-color: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
     
-    /* Botón WhatsApp */
+    /* Boton WhatsApp - Profesional */
     .whatsapp-btn {
-        background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        background: #128C7E;
         color: white !important;
-        padding: 12px 24px;
-        border-radius: 30px;
+        padding: 12px 28px;
+        border-radius: 8px;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        font-weight: bold;
-        box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-        transition: all 0.3s ease;
+        gap: 10px;
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 0.3px;
+        transition: all 0.2s ease;
+        border: none;
     }
     .whatsapp-btn:hover {
-        transform: scale(1.05);
-        box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+        background: #0d7366;
+        transform: translateY(-2px);
     }
     
-    /* Botón Chat Interno */
-    .chat-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white !important;
-        padding: 12px 24px;
-        border-radius: 30px;
+    /* Boton Contactar */
+    .contact-btn {
+        background: transparent;
+        color: #e0e0e0 !important;
+        padding: 12px 28px;
+        border-radius: 8px;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        font-weight: bold;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    }
-    
-    /* Precio destacado */
-    .price-tag {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 1.3em;
-        font-weight: bold;
-        display: inline-block;
-    }
-    
-    /* Badge de categoría */
-    .category-badge {
-        background: #e8f5e9;
-        color: #2e7d32;
-        padding: 4px 12px;
-        border-radius: 15px;
-        font-size: 0.85em;
+        gap: 10px;
         font-weight: 500;
+        font-size: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.2s ease;
+    }
+    .contact-btn:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.4);
     }
     
-    /* Header del sidebar */
+    /* Precio destacado - Elegante */
+    .price-tag {
+        background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%);
+        color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 1.4em;
+        font-weight: 600;
+        display: inline-block;
+        letter-spacing: -0.5px;
+    }
+    
+    /* Badge de categoria - Minimalista */
+    .category-badge {
+        background: rgba(255, 255, 255, 0.08);
+        color: #a0a0a0;
+        padding: 6px 14px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Header del sidebar - Profesional */
     .sidebar-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         color: white;
-        padding: 20px;
-        border-radius: 15px;
+        padding: 24px;
+        border-radius: 12px;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
     }
     
-    /* Stats cards */
+    /* Stats cards - Elegante */
     .stat-card {
-        background: white;
-        border-radius: 15px;
-        padding: 20px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 16px;
+        padding: 28px;
         text-align: center;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    .stat-card:hover {
+        border-color: rgba(255, 255, 255, 0.12);
     }
     .stat-number {
-        font-size: 2.5em;
-        font-weight: bold;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        font-size: 2.8em;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: -1px;
     }
     
-    /* Botones de acción */
+    /* Botones de accion - Profesionales */
     .stButton>button {
-        border-radius: 25px;
-        padding: 10px 25px;
-        font-weight: 600;
-        transition: all 0.3s ease;
+        border-radius: 8px;
+        padding: 10px 24px;
+        font-weight: 500;
+        font-size: 14px;
+        transition: all 0.2s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
     
     /* Imagen de producto */
     .product-image {
-        border-radius: 15px;
+        border-radius: 12px;
         width: 100%;
         height: 200px;
         object-fit: cover;
     }
     
-    /* Rating stars */
+    /* Rating - Sutil */
     .rating {
-        color: #ffc107;
-        font-size: 1.2em;
+        color: #c9a227;
+        font-size: 14px;
+        font-weight: 500;
     }
     
-    /* Chat container */
+    /* Chat container - Limpio */
     .chat-container {
-        background: #f8f9fa;
-        border-radius: 15px;
-        padding: 15px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 20px;
         max-height: 400px;
         overflow-y: auto;
     }
     .chat-message {
-        background: white;
-        padding: 10px 15px;
-        border-radius: 15px;
-        margin: 5px 0;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        background: rgba(255, 255, 255, 0.04);
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin: 8px 0;
+        font-size: 14px;
     }
     .chat-message.sent {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: #1e3a5f;
         color: white;
         margin-left: 20%;
     }
     .chat-message.received {
-        background: #e8f5e9;
+        background: rgba(255, 255, 255, 0.06);
         margin-right: 20%;
+    }
+    
+    /* Titulos y textos */
+    h1, h2, h3 {
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.5px;
+    }
+    
+    /* Dividers sutiles */
+    hr {
+        border-color: rgba(255, 255, 255, 0.06) !important;
     }
 </style>
 """, unsafe_allow_html=True)
 
-# 2. INICIALIZACIÓN DE BASE DE DATOS SIMULADA
+# 2. INICIALIZACION DE BASE DE DATOS SIMULADA
 if 'usuarios' not in st.session_state:
     st.session_state.usuarios = pd.DataFrame([
         {"id": 1, "nombre": "Claudio Heyden", "wsp": "56912345678", "estado": "Activa", 
-         "bio": "Experto en No-Code y automatización", "email": "claudio@ahorasi.cl",
+         "bio": "Experto en No-Code y automatizacion", "email": "claudio@ahorasi.cl",
          "fecha_registro": "2024-01-15", "plan": "Premium", "ventas": 45, "rating": 4.8},
-        {"id": 2, "nombre": "María González", "wsp": "56987654321", "estado": "Activa", 
+        {"id": 2, "nombre": "Maria Gonzalez", "wsp": "56987654321", "estado": "Activa", 
          "bio": "Especialista en Marketing Digital", "email": "maria@email.com",
-         "fecha_registro": "2024-02-20", "plan": "Básico", "ventas": 28, "rating": 4.5},
+         "fecha_registro": "2024-02-20", "plan": "Basico", "ventas": 28, "rating": 4.5},
         {"id": 3, "nombre": "Pedro Tech", "wsp": "56911223344", "estado": "Inactiva", 
          "bio": "Desarrollador de Prompts IA", "email": "pedro@email.com",
          "fecha_registro": "2024-03-10", "plan": "Premium", "ventas": 12, "rating": 4.2}
@@ -178,27 +216,27 @@ if 'usuarios' not in st.session_state:
 
 if 'contenidos' not in st.session_state:
     st.session_state.contenidos = pd.DataFrame([
-        {"id": 101, "creador_id": 1, "titulo": "🎯 Guía Maestra de Prompts Pro", 
+        {"id": 101, "creador_id": 1, "titulo": "Guia Maestra de Prompts Pro", 
          "descripcion": "50+ prompts probados para ChatGPT, Claude y Gemini. Aumenta tu productividad 10x.",
-         "precio": 3000, "cat": "Guías IA", "ventas": 120, "rating": 4.9,
+         "precio": 3000, "cat": "Guias IA", "ventas": 120, "rating": 4.9,
          "imagen": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400"},
-        {"id": 102, "creador_id": 1, "titulo": "💡 Pack 50 Ideas de Negocio 2024", 
+        {"id": 102, "creador_id": 1, "titulo": "Pack 50 Ideas de Negocio 2024", 
          "descripcion": "Ideas validadas de negocios digitales con bajo capital inicial.",
          "precio": 5000, "cat": "Emprendimiento", "ventas": 85, "rating": 4.7,
          "imagen": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400"},
-        {"id": 103, "creador_id": 2, "titulo": "🎨 Curso Completo Midjourney", 
-         "descripcion": "Aprende a crear imágenes impresionantes con IA. De principiante a experto.",
+        {"id": 103, "creador_id": 2, "titulo": "Curso Completo Midjourney", 
+         "descripcion": "Aprende a crear imagenes impresionantes con IA. De principiante a experto.",
          "precio": 10000, "cat": "Cursos", "ventas": 67, "rating": 4.8,
          "imagen": "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=400"},
-        {"id": 104, "creador_id": 2, "titulo": "📱 Templates Canva Premium", 
+        {"id": 104, "creador_id": 2, "titulo": "Templates Canva Premium", 
          "descripcion": "100 templates editables para redes sociales. Instagram, TikTok, LinkedIn.",
-         "precio": 4500, "cat": "Diseño", "ventas": 156, "rating": 4.6,
+         "precio": 4500, "cat": "Diseno", "ventas": 156, "rating": 4.6,
          "imagen": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400"},
-        {"id": 105, "creador_id": 1, "titulo": "🤖 Automatizaciones Make/Zapier", 
+        {"id": 105, "creador_id": 1, "titulo": "Automatizaciones Make/Zapier", 
          "descripcion": "10 flujos listos para copiar. Ahorra 20+ horas semanales.",
-         "precio": 8000, "cat": "Automatización", "ventas": 42, "rating": 4.9,
+         "precio": 8000, "cat": "Automatizacion", "ventas": 42, "rating": 4.9,
          "imagen": "https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=400"},
-        {"id": 106, "creador_id": 3, "titulo": "📊 Dashboard Analytics Notion", 
+        {"id": 106, "creador_id": 3, "titulo": "Dashboard Analytics Notion", 
          "descripcion": "Template completo para trackear tu negocio digital.",
          "precio": 2500, "cat": "Productividad", "ventas": 89, "rating": 4.4,
          "imagen": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400"}
@@ -215,68 +253,66 @@ if 'favoritos' not in st.session_state:
 
 if 'transacciones' not in st.session_state:
     st.session_state.transacciones = pd.DataFrame([
-        {"id": 1, "fecha": "2024-03-15", "comprador": "Juan Pérez", "producto_id": 101, "monto": 3000, "estado": "Completada", "metodo": "Transferencia"},
-        {"id": 2, "fecha": "2024-03-14", "comprador": "Ana López", "producto_id": 103, "monto": 10000, "estado": "Completada", "metodo": "WebPay"},
+        {"id": 1, "fecha": "2024-03-15", "comprador": "Juan Perez", "producto_id": 101, "monto": 3000, "estado": "Completada", "metodo": "Transferencia"},
+        {"id": 2, "fecha": "2024-03-14", "comprador": "Ana Lopez", "producto_id": 103, "monto": 10000, "estado": "Completada", "metodo": "WebPay"},
         {"id": 3, "fecha": "2024-03-14", "comprador": "Carlos Ruiz", "producto_id": 102, "monto": 5000, "estado": "Pendiente", "metodo": "Transferencia"},
-        {"id": 4, "fecha": "2024-03-13", "comprador": "Laura Díaz", "producto_id": 104, "monto": 4500, "estado": "Completada", "metodo": "WebPay"},
+        {"id": 4, "fecha": "2024-03-13", "comprador": "Laura Diaz", "producto_id": 104, "monto": 4500, "estado": "Completada", "metodo": "WebPay"},
         {"id": 5, "fecha": "2024-03-12", "comprador": "Diego Mora", "producto_id": 101, "monto": 3000, "estado": "Completada", "metodo": "Transferencia"},
     ])
 
-# 3. SIDEBAR CON NAVEGACIÓN MEJORADA
+# 3. SIDEBAR CON NAVEGACION PROFESIONAL
 with st.sidebar:
     st.markdown("""
     <div class="sidebar-header">
-        <h1>🚀 AhoraSI</h1>
-        <p>Marketplace Digital</p>
+        <h1 style="font-size: 1.6em; margin: 0; font-weight: 700; letter-spacing: -0.5px;">AhoraSI</h1>
+        <p style="margin: 8px 0 0 0; opacity: 0.7; font-size: 0.85em; font-weight: 400;">Marketplace Digital</p>
     </div>
     """, unsafe_allow_html=True)
     
     menu = st.selectbox(
-        "📍 Navegación",
-        ["🏪 Vitrina Pública", "❤️ Mis Favoritos", "🛒 Mi Carrito", 
-         "👤 Mi Panel (Creadores)", "⚙️ Admin Dashboard"],
+        "Navegacion",
+        ["Vitrina", "Favoritos", "Carrito", 
+         "Panel Creadores", "Administracion"],
         label_visibility="collapsed"
     )
     
     st.divider()
     
-    # Búsqueda global
-    busqueda = st.text_input("🔍 Buscar productos...", placeholder="Ej: prompts, cursos...")
+    # Busqueda global
+    busqueda = st.text_input("Buscar productos", placeholder="Ej: prompts, cursos...")
     
     # Filtros
-    st.subheader("🎛️ Filtros")
+    st.markdown("**Filtros**")
     categorias = ["Todas"] + list(st.session_state.contenidos['cat'].unique())
-    categoria_filtro = st.selectbox("Categoría", categorias)
+    categoria_filtro = st.selectbox("Categoria", categorias)
     
     precio_min, precio_max = st.slider(
-        "💰 Rango de precio",
+        "Rango de precio",
         0, 15000, (0, 15000),
         format="$%d"
     )
     
     ordenar_por = st.selectbox(
-        "📊 Ordenar por",
-        ["Más vendidos", "Mejor valorados", "Precio: menor a mayor", "Precio: mayor a menor", "Más recientes"]
+        "Ordenar por",
+        ["Mas vendidos", "Mejor valorados", "Precio: menor a mayor", "Precio: mayor a menor", "Mas recientes"]
     )
     
     st.divider()
-    st.caption("© 2024 AhoraSI Marketplace")
-    st.caption("Creado con ❤️ en Chile")
+    st.caption("2024 AhoraSI Marketplace")
+    st.caption("Creado en Chile")
 
 # 4. FUNCIONES AUXILIARES
 def mostrar_estrellas(rating):
     estrellas_llenas = int(rating)
-    media_estrella = 1 if rating - estrellas_llenas >= 0.5 else 0
-    estrellas_vacias = 5 - estrellas_llenas - media_estrella
-    return "⭐" * estrellas_llenas + "✨" * media_estrella + "☆" * estrellas_vacias
+    return str(rating) + "/5"
 
 def filtrar_productos(df):
-    # Filtrar por búsqueda
+    # Filtrar por busqueda
     if busqueda:
         df = df[df['titulo'].str.lower().str.contains(busqueda.lower()) | 
                 df['descripcion'].str.lower().str.contains(busqueda.lower())]
     
-    # Filtrar por categoría
+    # Filtrar por categoria
     if categoria_filtro != "Todas":
         df = df[df['cat'] == categoria_filtro]
     
@@ -284,7 +320,7 @@ def filtrar_productos(df):
     df = df[(df['precio'] >= precio_min) & (df['precio'] <= precio_max)]
     
     # Ordenar
-    if ordenar_por == "Más vendidos":
+    if ordenar_por == "Mas vendidos":
         df = df.sort_values('ventas', ascending=False)
     elif ordenar_por == "Mejor valorados":
         df = df.sort_values('rating', ascending=False)
@@ -295,50 +331,55 @@ def filtrar_productos(df):
     
     return df
 
-# ==================== VISTA 1: VITRINA PÚBLICA ====================
-if menu == "🏪 Vitrina Pública":
-    st.markdown("<h1 style='text-align: center; color: white;'>🚀 AhoraSI Marketplace</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center; color: white;'>La vitrina de activos digitales para creadores de IA</h3>", unsafe_allow_html=True)
+# ==================== VISTA 1: VITRINA PUBLICA ====================
+if menu == "Vitrina":
+    # Header profesional
+    st.markdown("""
+    <div style="text-align: center; padding: 60px 0 30px 0;">
+        <h1 style="font-size: 2.4em; font-weight: 600; color: #ffffff; margin: 0; letter-spacing: -0.5px;">
+            AhoraSI Marketplace
+        </h1>
+        <p style="font-size: 1em; color: rgba(255,255,255,0.5); margin-top: 10px; font-weight: 400;">
+            Plataforma de activos digitales para profesionales
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Métricas rápidas con estilo destacado
+    # Metricas con diseno minimalista y elegante
     total_productos = len(st.session_state.contenidos)
     total_creadores = len(st.session_state.usuarios[st.session_state.usuarios['estado'] == 'Activa'])
     total_ventas = st.session_state.contenidos['ventas'].sum()
     rating_promedio = st.session_state.contenidos['rating'].mean()
     
     st.markdown(f"""
-    <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; margin: 30px 0;">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-                    border-radius: 20px; padding: 25px 40px; text-align: center; 
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-width: 200px;
-                    border: 2px solid rgba(255,255,255,0.2);">
-            <div style="font-size: 3em; margin-bottom: 10px;">📦</div>
-            <div style="font-size: 2.5em; font-weight: bold; color: white;">{total_productos}</div>
-            <div style="font-size: 1.3em; color: rgba(255,255,255,0.9); font-weight: 600; margin-top: 5px;">PRODUCTOS</div>
+    <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; margin: 30px 0 50px 0;">
+        <div style="background: rgba(255, 255, 255, 0.03); 
+                    border: 1px solid rgba(255,255,255,0.06);
+                    border-radius: 12px; padding: 28px 44px; text-align: center; 
+                    min-width: 160px;">
+            <div style="font-size: 2.4em; font-weight: 600; color: #ffffff; letter-spacing: -1px; line-height: 1;">{total_productos}</div>
+            <div style="font-size: 0.75em; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 10px; text-transform: uppercase; letter-spacing: 1.5px;">Productos</div>
         </div>
-        <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); 
-                    border-radius: 20px; padding: 25px 40px; text-align: center; 
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-width: 200px;
-                    border: 2px solid rgba(255,255,255,0.2);">
-            <div style="font-size: 3em; margin-bottom: 10px;">👥</div>
-            <div style="font-size: 2.5em; font-weight: bold; color: white;">{total_creadores}</div>
-            <div style="font-size: 1.3em; color: rgba(255,255,255,0.9); font-weight: 600; margin-top: 5px;">CREADORES</div>
+        <div style="background: rgba(255, 255, 255, 0.03); 
+                    border: 1px solid rgba(255,255,255,0.06);
+                    border-radius: 12px; padding: 28px 44px; text-align: center; 
+                    min-width: 160px;">
+            <div style="font-size: 2.4em; font-weight: 600; color: #ffffff; letter-spacing: -1px; line-height: 1;">{total_creadores}</div>
+            <div style="font-size: 0.75em; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 10px; text-transform: uppercase; letter-spacing: 1.5px;">Creadores</div>
         </div>
-        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); 
-                    border-radius: 20px; padding: 25px 40px; text-align: center; 
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-width: 200px;
-                    border: 2px solid rgba(255,255,255,0.2);">
-            <div style="font-size: 3em; margin-bottom: 10px;">🛒</div>
-            <div style="font-size: 2.5em; font-weight: bold; color: white;">{total_ventas}</div>
-            <div style="font-size: 1.3em; color: rgba(255,255,255,0.9); font-weight: 600; margin-top: 5px;">VENTAS TOTALES</div>
+        <div style="background: rgba(255, 255, 255, 0.03); 
+                    border: 1px solid rgba(255,255,255,0.06);
+                    border-radius: 12px; padding: 28px 44px; text-align: center; 
+                    min-width: 160px;">
+            <div style="font-size: 2.4em; font-weight: 600; color: #ffffff; letter-spacing: -1px; line-height: 1;">{total_ventas}</div>
+            <div style="font-size: 0.75em; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 10px; text-transform: uppercase; letter-spacing: 1.5px;">Ventas</div>
         </div>
-        <div style="background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); 
-                    border-radius: 20px; padding: 25px 40px; text-align: center; 
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.3); min-width: 200px;
-                    border: 2px solid rgba(255,255,255,0.2);">
-            <div style="font-size: 3em; margin-bottom: 10px;">⭐</div>
-            <div style="font-size: 2.5em; font-weight: bold; color: white;">{rating_promedio:.1f}</div>
-            <div style="font-size: 1.3em; color: rgba(255,255,255,0.9); font-weight: 600; margin-top: 5px;">RATING PROMEDIO</div>
+        <div style="background: rgba(255, 255, 255, 0.03); 
+                    border: 1px solid rgba(255,255,255,0.06);
+                    border-radius: 12px; padding: 28px 44px; text-align: center; 
+                    min-width: 160px;">
+            <div style="font-size: 2.4em; font-weight: 600; color: #ffffff; letter-spacing: -1px; line-height: 1;">{rating_promedio:.1f}</div>
+            <div style="font-size: 0.75em; color: rgba(255,255,255,0.4); font-weight: 500; margin-top: 10px; text-transform: uppercase; letter-spacing: 1.5px;">Rating</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -355,9 +396,9 @@ if menu == "🏪 Vitrina Pública":
     df_filtrado = filtrar_productos(df_activos)
     
     if len(df_filtrado) == 0:
-        st.warning("😕 No se encontraron productos con esos filtros. Intenta con otros criterios.")
+        st.info("No se encontraron productos con esos filtros. Intenta con otros criterios.")
     else:
-        st.subheader(f"📦 {len(df_filtrado)} productos disponibles")
+        st.markdown(f"<p style='color: rgba(255,255,255,0.6); font-size: 1em;'>{len(df_filtrado)} productos disponibles</p>", unsafe_allow_html=True)
         
         # Mostrar productos en grid
         cols = st.columns(3)
@@ -367,32 +408,32 @@ if menu == "🏪 Vitrina Pública":
                     # Imagen del producto
                     st.image(row['imagen'], use_container_width=True)
                     
-                    # Categoría badge
+                    # Categoria badge
                     st.markdown(f"<span class='category-badge'>{row['cat']}</span>", unsafe_allow_html=True)
                     
-                    # Título
+                    # Titulo
                     st.markdown(f"### {row['titulo']}")
                     
-                    # Descripción
+                    # Descripcion
                     st.caption(row['descripcion'][:100] + "...")
                     
                     # Rating y ventas
                     col_a, col_b = st.columns(2)
                     with col_a:
-                        st.markdown(f"{mostrar_estrellas(row['rating'])} ({row['rating']})")
+                        st.markdown(f"Rating: {row['rating']}/5")
                     with col_b:
-                        st.markdown(f"🛒 {row['ventas']} ventas")
+                        st.markdown(f"{row['ventas']} ventas")
                     
                     # Precio
                     st.markdown(f"<span class='price-tag'>${row['precio']:,}</span>", unsafe_allow_html=True)
                     
                     # Vendedor
-                    st.caption(f"👤 Por: **{row['nombre']}**")
+                    st.caption(f"Por: **{row['nombre']}**")
                     
-                    # Botones de acción
+                    # Botones de accion
                     col1, col2 = st.columns(2)
                     with col1:
-                        # Botón WhatsApp
+                        # Boton WhatsApp
                         wsp_msg = f"Hola {row['nombre']}, me interesa: {row['titulo']}"
                         wsp_link = f"https://wa.me/{row['wsp']}?text={wsp_msg.replace(' ', '%20')}"
                         st.markdown(f"""
@@ -405,8 +446,8 @@ if menu == "🏪 Vitrina Pública":
                         """, unsafe_allow_html=True)
                     
                     with col2:
-                        # Botón Chat Interno
-                        if st.button("💬 Chat", key=f"chat_{row['id']}", use_container_width=True):
+                        # Boton Chat Interno
+                        if st.button("Chat", key=f"chat_{row['id']}", use_container_width=True):
                             st.session_state['chat_activo'] = row['creador_id']
                             st.session_state['chat_producto'] = row['titulo']
                             st.session_state['chat_vendedor'] = row['nombre']
@@ -414,56 +455,56 @@ if menu == "🏪 Vitrina Pública":
                     # Botones secundarios
                     col3, col4 = st.columns(2)
                     with col3:
-                        if st.button("❤️", key=f"fav_{row['id']}", help="Agregar a favoritos"):
+                        if st.button("Favorito", key=f"fav_{row['id']}", help="Agregar a favoritos"):
                             if row['id'] not in st.session_state.favoritos:
                                 st.session_state.favoritos.append(row['id'])
-                                st.success("¡Agregado a favoritos!")
+                                st.success("Agregado a favoritos")
                             else:
-                                st.info("Ya está en favoritos")
+                                st.info("Ya esta en favoritos")
                     with col4:
-                        if st.button("🛒", key=f"cart_{row['id']}", help="Agregar al carrito"):
+                        if st.button("Carrito", key=f"cart_{row['id']}", help="Agregar al carrito"):
                             st.session_state.carrito.append({
                                 'id': row['id'],
                                 'titulo': row['titulo'],
                                 'precio': row['precio'],
                                 'vendedor': row['nombre']
                             })
-                            st.success("¡Agregado al carrito!")
+                            st.success("Agregado al carrito")
                     
                     st.divider()
     
     # Modal de Chat (simulado con expander)
     if 'chat_activo' in st.session_state and st.session_state.chat_activo:
         st.divider()
-        st.subheader(f"💬 Chat con {st.session_state.get('chat_vendedor', 'Vendedor')}")
+        st.subheader(f"Chat con {st.session_state.get('chat_vendedor', 'Vendedor')}")
         st.caption(f"Producto: {st.session_state.get('chat_producto', '')}")
         
-        # Área de mensajes
+        # Area de mensajes
         chat_container = st.container()
         with chat_container:
             for msg in st.session_state.mensajes_chat:
                 if msg['tipo'] == 'enviado':
-                    st.markdown(f"<div class='chat-message sent'>👤 Tú: {msg['texto']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='chat-message sent'>Tu: {msg['texto']}</div>", unsafe_allow_html=True)
                 else:
-                    st.markdown(f"<div class='chat-message received'>🏪 {msg['texto']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div class='chat-message received'>Vendedor: {msg['texto']}</div>", unsafe_allow_html=True)
         
         # Input de mensaje
         col_msg, col_btn = st.columns([4, 1])
         with col_msg:
             nuevo_mensaje = st.text_input("Escribe tu mensaje...", key="chat_input", label_visibility="collapsed")
         with col_btn:
-            if st.button("📤 Enviar", use_container_width=True):
+            if st.button("Enviar", use_container_width=True):
                 if nuevo_mensaje:
                     st.session_state.mensajes_chat.append({
                         'tipo': 'enviado',
                         'texto': nuevo_mensaje
                     })
-                    # Respuesta automática simulada
+                    # Respuesta automatica simulada
                     respuestas = [
-                        "¡Hola! Gracias por tu interés. ¿En qué puedo ayudarte?",
-                        "Claro, puedo darte más detalles sobre este producto.",
-                        "El producto incluye actualizaciones gratuitas por 1 año.",
-                        "¿Te gustaría hacer la compra ahora? Acepto transferencia o WebPay."
+                        "Hola! Gracias por tu interes. En que puedo ayudarte?",
+                        "Claro, puedo darte mas detalles sobre este producto.",
+                        "El producto incluye actualizaciones gratuitas por 1 ano.",
+                        "Te gustaria hacer la compra ahora? Acepto transferencia o WebPay."
                     ]
                     st.session_state.mensajes_chat.append({
                         'tipo': 'recibido',
@@ -471,17 +512,17 @@ if menu == "🏪 Vitrina Pública":
                     })
                     st.rerun()
         
-        if st.button("❌ Cerrar chat"):
+        if st.button("Cerrar chat"):
             st.session_state.chat_activo = None
             st.session_state.mensajes_chat = []
             st.rerun()
 
 # ==================== VISTA 2: FAVORITOS ====================
-elif menu == "❤️ Mis Favoritos":
-    st.markdown("<h1>❤️ Mis Favoritos</h1>", unsafe_allow_html=True)
+elif menu == "Favoritos":
+    st.markdown("<h1 style='color: white; font-weight: 600;'>Mis Favoritos</h1>", unsafe_allow_html=True)
     
     if not st.session_state.favoritos:
-        st.info("😕 No tienes productos en favoritos. ¡Explora la vitrina y agrega algunos!")
+        st.info("No tienes productos guardados. Explora la vitrina y agrega algunos.")
     else:
         df_favoritos = st.session_state.contenidos[st.session_state.contenidos['id'].isin(st.session_state.favoritos)]
         
@@ -494,25 +535,25 @@ elif menu == "❤️ Mis Favoritos":
                 st.caption(row['descripcion'])
                 st.markdown(f"**${row['precio']:,}**")
             with col3:
-                if st.button("🗑️ Quitar", key=f"rem_fav_{row['id']}"):
+                if st.button("Quitar", key=f"rem_fav_{row['id']}"):
                     st.session_state.favoritos.remove(row['id'])
                     st.rerun()
-                if st.button("🛒 Al carrito", key=f"fav_cart_{row['id']}"):
+                if st.button("Al carrito", key=f"fav_cart_{row['id']}"):
                     st.session_state.carrito.append({
                         'id': row['id'],
                         'titulo': row['titulo'],
                         'precio': row['precio'],
                         'vendedor': 'Vendedor'
                     })
-                    st.success("¡Agregado!")
+                    st.success("Agregado!")
             st.divider()
 
 # ==================== VISTA 3: CARRITO ====================
-elif menu == "🛒 Mi Carrito":
-    st.markdown("<h1>🛒 Mi Carrito de Compras</h1>", unsafe_allow_html=True)
+elif menu == "Carrito":
+    st.markdown("<h1 style='color: white; font-weight: 600;'>Carrito de Compras</h1>", unsafe_allow_html=True)
     
     if not st.session_state.carrito:
-        st.info("😕 Tu carrito está vacío. ¡Agrega algunos productos!")
+        st.info("Tu carrito esta vacio. Agrega productos desde la vitrina.")
     else:
         total = 0
         for i, item in enumerate(st.session_state.carrito):
@@ -524,20 +565,19 @@ elif menu == "🛒 Mi Carrito":
                 st.markdown(f"**${item['precio']:,}**")
                 total += item['precio']
             with col3:
-                if st.button("🗑️", key=f"rem_cart_{i}"):
+                if st.button("Eliminar", key=f"rem_cart_{i}"):
                     st.session_state.carrito.pop(i)
                     st.rerun()
             st.divider()
         
-        st.markdown(f"## Total: ${total:,}")
+        st.markdown(f"<h2 style='color: white;'>Total: ${total:,}</h2>", unsafe_allow_html=True)
         
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("💳 Pagar con WebPay", use_container_width=True, type="primary"):
-                st.success("🎉 ¡Redirigiendo a WebPay! (Simulación)")
-                st.balloons()
+            if st.button("Pagar con WebPay", use_container_width=True, type="primary"):
+                st.success("Redirigiendo a WebPay... (Simulacion)")
         with col2:
-            if st.button("🏦 Pagar con Transferencia", use_container_width=True):
+            if st.button("Pagar con Transferencia", use_container_width=True):
                 st.info("""
                 **Datos para transferencia:**
                 - Banco: Banco Estado
@@ -546,15 +586,15 @@ elif menu == "🛒 Mi Carrito":
                 - Email: pagos@ahorasi.cl
                 """)
         
-        if st.button("🗑️ Vaciar carrito"):
+        if st.button("Vaciar carrito"):
             st.session_state.carrito = []
             st.rerun()
 
 # ==================== VISTA 4: PANEL CREADOR ====================
-elif menu == "👤 Mi Panel (Creadores)":
-    st.markdown("<h1>👤 Panel del Creador</h1>", unsafe_allow_html=True)
+elif menu == "Panel Creadores":
+    st.markdown("<h1 style='color: white; font-weight: 600;'>Panel del Creador</h1>", unsafe_allow_html=True)
     
-    usuario_actual = st.selectbox("🔄 Simular sesión como:", st.session_state.usuarios['nombre'])
+    usuario_actual = st.selectbox("Simular sesion como:", st.session_state.usuarios['nombre'])
     datos_user = st.session_state.usuarios[st.session_state.usuarios['nombre'] == usuario_actual].iloc[0]
     
     # Info del usuario
@@ -565,31 +605,31 @@ elif menu == "👤 Mi Panel (Creadores)":
         st.markdown(f"### {datos_user['nombre']}")
         st.caption(datos_user['bio'])
         if datos_user['estado'] == "Activa":
-            st.success(f"✅ Suscripción {datos_user['plan']} activa")
+            st.success(f"Suscripcion {datos_user['plan']} activa")
         else:
-            st.error("❌ Suscripción inactiva")
+            st.error("Suscripcion inactiva")
     
     st.divider()
     
     if datos_user['estado'] == "Activa":
-        # Métricas del creador
+        # Metricas del creador
         mis_productos = st.session_state.contenidos[st.session_state.contenidos['creador_id'] == datos_user['id']]
         
         col1, col2, col3, col4 = st.columns(4)
         with col1:
-            st.metric("📦 Productos", len(mis_productos))
+            st.metric("Productos", len(mis_productos))
         with col2:
-            st.metric("🛒 Ventas Totales", mis_productos['ventas'].sum())
+            st.metric("Ventas Totales", mis_productos['ventas'].sum())
         with col3:
             ingresos = (mis_productos['ventas'] * mis_productos['precio']).sum()
-            st.metric("💰 Ingresos", f"${ingresos:,}")
+            st.metric("Ingresos", f"${ingresos:,}")
         with col4:
-            st.metric("⭐ Rating Promedio", f"{mis_productos['rating'].mean():.1f}")
+            st.metric("Rating Promedio", f"{mis_productos['rating'].mean():.1f}")
         
         st.divider()
         
         # Tabs para organizar
-        tab1, tab2, tab3 = st.tabs(["📦 Mis Productos", "➕ Nuevo Producto", "📊 Estadísticas"])
+        tab1, tab2, tab3 = st.tabs(["Mis Productos", "Nuevo Producto", "Estadisticas"])
         
         with tab1:
             st.subheader("Mis productos publicados")
@@ -599,22 +639,22 @@ elif menu == "👤 Mi Panel (Creadores)":
                     st.image(row['imagen'], width=100)
                 with col2:
                     st.markdown(f"**{row['titulo']}**")
-                    st.caption(f"${row['precio']:,} • {row['ventas']} ventas • ⭐{row['rating']}")
+                    st.caption(f"${row['precio']:,} - {row['ventas']} ventas - {row['rating']} rating")
                 with col3:
-                    st.button("✏️ Editar", key=f"edit_{row['id']}")
-                    st.button("🗑️ Eliminar", key=f"del_{row['id']}")
+                    st.button("Editar", key=f"edit_{row['id']}")
+                    st.button("Eliminar", key=f"del_{row['id']}")
                 st.divider()
         
         with tab2:
-            st.subheader("➕ Publicar Nuevo Producto")
+            st.subheader("Publicar Nuevo Producto")
             with st.form("nuevo_producto"):
-                titulo = st.text_input("📝 Título del producto")
-                descripcion = st.text_area("📄 Descripción")
-                precio = st.number_input("💰 Precio (CLP)", min_value=0, step=500)
-                categoria = st.selectbox("🏷️ Categoría", ["Guías IA", "Cursos", "Templates", "Automatización", "Diseño", "Marketing"])
-                imagen_url = st.text_input("🖼️ URL de imagen", placeholder="https://...")
+                titulo = st.text_input("Titulo del producto")
+                descripcion = st.text_area("Descripcion")
+                precio = st.number_input("Precio (CLP)", min_value=0, step=500)
+                categoria = st.selectbox("Categoria", ["Guias IA", "Cursos", "Templates", "Automatizacion", "Diseno", "Marketing"])
+                imagen_url = st.text_input("URL de imagen", placeholder="https://...")
                 
-                if st.form_submit_button("🚀 Publicar Producto", type="primary"):
+                if st.form_submit_button("Publicar Producto", type="primary"):
                     if titulo and descripcion and precio > 0:
                         nuevo_id = st.session_state.contenidos['id'].max() + 1
                         nuevo_producto = pd.DataFrame([{
@@ -629,127 +669,125 @@ elif menu == "👤 Mi Panel (Creadores)":
                             "imagen": imagen_url if imagen_url else "https://via.placeholder.com/400"
                         }])
                         st.session_state.contenidos = pd.concat([st.session_state.contenidos, nuevo_producto], ignore_index=True)
-                        st.success("✅ ¡Producto publicado exitosamente!")
-                        st.balloons()
+                        st.success("Producto publicado exitosamente")
                     else:
                         st.error("Por favor completa todos los campos")
         
         with tab3:
-            st.subheader("📊 Estadísticas de Ventas")
-            # Gráfico simple con métricas
-            st.markdown("### 📈 Rendimiento del mes")
+            st.subheader("Estadisticas de Ventas")
+            st.markdown("### Rendimiento del mes")
             col1, col2 = st.columns(2)
             with col1:
-                st.markdown("**Productos más vendidos:**")
+                st.markdown("**Productos mas vendidos:**")
                 top_productos = mis_productos.nlargest(3, 'ventas')[['titulo', 'ventas']]
                 for idx, row in top_productos.iterrows():
-                    st.markdown(f"• {row['titulo']}: **{row['ventas']}** ventas")
+                    st.markdown(f"- {row['titulo']}: **{row['ventas']}** ventas")
             with col2:
                 st.markdown("**Mejor valorados:**")
                 top_rating = mis_productos.nlargest(3, 'rating')[['titulo', 'rating']]
                 for idx, row in top_rating.iterrows():
-                    st.markdown(f"• {row['titulo']}: **{row['rating']}** ⭐")
+                    st.markdown(f"- {row['titulo']}: **{row['rating']}**")
     else:
-        st.error("❌ Tu suscripción está inactiva. Contacta al administrador para renovar.")
+        st.error("Tu suscripcion esta inactiva. Contacta al administrador para renovar.")
         st.markdown("""
-        ### 💳 Planes disponibles:
-        - **Plan Básico** - $5.000/mes: Hasta 5 productos
+        ### Planes disponibles:
+        - **Plan Basico** - $5.000/mes: Hasta 5 productos
         - **Plan Premium** - $10.000/mes: Productos ilimitados + destacados
         """)
-        if st.button("📱 Contactar para renovar (WhatsApp)", type="primary"):
-            st.markdown("[Abrir WhatsApp](https://wa.me/56912345678?text=Hola,%20quiero%20renovar%20mi%20suscripción)")
+        if st.button("Contactar para renovar (WhatsApp)", type="primary"):
+            st.markdown("[Abrir WhatsApp](https://wa.me/56912345678?text=Hola,%20quiero%20renovar%20mi%20suscripcion)")
 
 # ==================== VISTA 5: ADMIN DASHBOARD ====================
-elif menu == "⚙️ Admin Dashboard":
-    st.markdown("<h1>⚙️ Panel de Administración</h1>", unsafe_allow_html=True)
+elif menu == "Administracion":
+    st.markdown("<h1 style='color: white; font-weight: 600;'>Panel de Administracion</h1>", unsafe_allow_html=True)
     st.caption("Control total de la plataforma AhoraSI")
     
-    # Tabs de administración
+    # Tabs de administracion
     tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "📊 Dashboard", "👥 Usuarios", "📦 Productos", "💰 Transacciones", "⚙️ Configuración"
+        "Dashboard", "Usuarios", "Productos", "Transacciones", "Configuracion"
     ])
     
     # TAB 1: Dashboard General
     with tab1:
-        st.subheader("📊 Resumen General")
+        st.subheader("Resumen General")
         
         # KPIs principales
         col1, col2, col3, col4 = st.columns(4)
         with col1:
             st.metric(
-                "💰 Ingresos del Mes", 
+                "Ingresos del Mes", 
                 f"${st.session_state.transacciones['monto'].sum():,}",
                 delta="+12%"
             )
         with col2:
             st.metric(
-                "👥 Usuarios Activos",
+                "Usuarios Activos",
                 len(st.session_state.usuarios[st.session_state.usuarios['estado'] == 'Activa']),
                 delta="+2"
             )
         with col3:
             st.metric(
-                "📦 Total Productos",
+                "Total Productos",
                 len(st.session_state.contenidos),
                 delta="+5"
             )
         with col4:
             completadas = len(st.session_state.transacciones[st.session_state.transacciones['estado'] == 'Completada'])
             st.metric(
-                "✅ Ventas Completadas",
+                "Ventas Completadas",
                 completadas,
                 delta="+3"
             )
         
         st.divider()
         
-        # Gráficos simulados con datos
+        # Graficos simulados con datos
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown("### 📈 Ventas por Categoría")
+            st.markdown("### Ventas por Categoria")
             ventas_cat = st.session_state.contenidos.groupby('cat')['ventas'].sum().sort_values(ascending=True)
             st.bar_chart(ventas_cat)
         
         with col2:
-            st.markdown("### 💵 Ingresos por Método de Pago")
+            st.markdown("### Ingresos por Metodo de Pago")
             ingresos_metodo = st.session_state.transacciones.groupby('metodo')['monto'].sum()
             st.bar_chart(ingresos_metodo)
         
         st.divider()
         
         # Actividad reciente
-        st.markdown("### 🕐 Actividad Reciente")
+        st.markdown("### Actividad Reciente")
         st.dataframe(
             st.session_state.transacciones.sort_values('fecha', ascending=False).head(5),
             use_container_width=True,
             hide_index=True
         )
     
-    # TAB 2: Gestión de Usuarios
+    # TAB 2: Gestion de Usuarios
     with tab2:
-        st.subheader("👥 Gestión de Creadores")
+        st.subheader("Gestion de Creadores")
         
-        # Barra de búsqueda y filtros
+        # Barra de busqueda y filtros
         col1, col2, col3 = st.columns([2, 1, 1])
         with col1:
-            buscar_user = st.text_input("🔍 Buscar usuario", key="buscar_user")
+            buscar_user = st.text_input("Buscar usuario", key="buscar_user")
         with col2:
             filtro_estado = st.selectbox("Estado", ["Todos", "Activa", "Inactiva"])
         with col3:
-            filtro_plan = st.selectbox("Plan", ["Todos", "Premium", "Básico"])
+            filtro_plan = st.selectbox("Plan", ["Todos", "Premium", "Basico"])
         
         # Agregar nuevo usuario
-        with st.expander("➕ Agregar Nuevo Creador"):
+        with st.expander("Agregar Nuevo Creador"):
             col1, col2 = st.columns(2)
             with col1:
                 nuevo_nombre = st.text_input("Nombre completo")
                 nuevo_wsp = st.text_input("WhatsApp (sin +)")
                 nuevo_email = st.text_input("Email")
             with col2:
-                nueva_bio = st.text_area("Biografía")
-                nuevo_plan = st.selectbox("Plan inicial", ["Básico", "Premium"])
+                nueva_bio = st.text_area("Biografia")
+                nuevo_plan = st.selectbox("Plan inicial", ["Basico", "Premium"])
             
-            if st.button("✅ Crear Usuario", type="primary"):
+            if st.button("Crear Usuario", type="primary"):
                 if nuevo_nombre and nuevo_wsp and nuevo_email:
                     nuevo_id = st.session_state.usuarios['id'].max() + 1
                     nuevo_user = pd.DataFrame([{
@@ -765,7 +803,7 @@ elif menu == "⚙️ Admin Dashboard":
                         "rating": 0
                     }])
                     st.session_state.usuarios = pd.concat([st.session_state.usuarios, nuevo_user], ignore_index=True)
-                    st.success(f"✅ Usuario {nuevo_nombre} creado exitosamente")
+                    st.success(f"Usuario {nuevo_nombre} creado exitosamente")
                     st.rerun()
         
         st.divider()
@@ -784,57 +822,57 @@ elif menu == "⚙️ Admin Dashboard":
                 col1, col2, col3, col4, col5 = st.columns([2, 1, 1, 1, 2])
                 with col1:
                     st.markdown(f"**{row['nombre']}**")
-                    st.caption(f"📧 {row['email']}")
+                    st.caption(f"{row['email']}")
                 with col2:
-                    estado_color = "🟢" if row['estado'] == "Activa" else "🔴"
-                    st.markdown(f"{estado_color} {row['estado']}")
+                    estado_txt = "Activa" if row['estado'] == "Activa" else "Inactiva"
+                    st.markdown(f"{estado_txt}")
                 with col3:
-                    st.markdown(f"📋 {row['plan']}")
+                    st.markdown(f"{row['plan']}")
                 with col4:
-                    st.markdown(f"🛒 {row['ventas']} ventas")
+                    st.markdown(f"{row['ventas']} ventas")
                 with col5:
                     col_a, col_b, col_c = st.columns(3)
                     with col_a:
-                        if st.button("🔄", key=f"toggle_{i}", help="Cambiar estado"):
+                        if st.button("Toggle", key=f"toggle_{i}", help="Cambiar estado"):
                             nuevo_estado = "Inactiva" if row['estado'] == "Activa" else "Activa"
                             st.session_state.usuarios.at[i, 'estado'] = nuevo_estado
                             st.rerun()
                     with col_b:
-                        if st.button("✏️", key=f"edit_user_{i}", help="Editar"):
+                        if st.button("Edit", key=f"edit_user_{i}", help="Editar"):
                             st.session_state[f'editing_user_{i}'] = True
                     with col_c:
                         wsp_link = f"https://wa.me/{row['wsp']}"
-                        st.markdown(f"[📱]({wsp_link})", help="Contactar por WhatsApp")
+                        st.markdown(f"[WSP]({wsp_link})", help="Contactar por WhatsApp")
                 
-                # Formulario de edición expandible
+                # Formulario de edicion expandible
                 if st.session_state.get(f'editing_user_{i}', False):
                     with st.form(f"edit_form_{i}"):
                         col1, col2 = st.columns(2)
                         with col1:
-                            edit_plan = st.selectbox("Plan", ["Básico", "Premium"], 
-                                index=0 if row['plan'] == "Básico" else 1)
+                            edit_plan = st.selectbox("Plan", ["Basico", "Premium"], 
+                                index=0 if row['plan'] == "Basico" else 1)
                         with col2:
                             edit_bio = st.text_input("Bio", value=row['bio'])
                         
                         col_save, col_cancel = st.columns(2)
                         with col_save:
-                            if st.form_submit_button("💾 Guardar"):
+                            if st.form_submit_button("Guardar"):
                                 st.session_state.usuarios.at[i, 'plan'] = edit_plan
                                 st.session_state.usuarios.at[i, 'bio'] = edit_bio
                                 st.session_state[f'editing_user_{i}'] = False
                                 st.rerun()
                         with col_cancel:
-                            if st.form_submit_button("❌ Cancelar"):
+                            if st.form_submit_button("Cancelar"):
                                 st.session_state[f'editing_user_{i}'] = False
                                 st.rerun()
                 
                 st.divider()
     
-    # TAB 3: Gestión de Productos
+    # TAB 3: Gestion de Productos
     with tab3:
-        st.subheader("📦 Gestión de Productos")
+        st.subheader("Gestion de Productos")
         
-        # Estadísticas rápidas
+        # Estadisticas rapidas
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("Total Productos", len(st.session_state.contenidos))
@@ -852,18 +890,18 @@ elif menu == "⚙️ Admin Dashboard":
         # Filtros
         col1, col2 = st.columns(2)
         with col1:
-            filtro_cat_admin = st.selectbox("Filtrar por categoría", 
+            filtro_cat_admin = st.selectbox("Filtrar por categoria", 
                 ["Todas"] + list(st.session_state.contenidos['cat'].unique()))
         with col2:
             ordenar_admin = st.selectbox("Ordenar por", 
-                ["Más vendidos", "Mejor rating", "Precio mayor", "Precio menor"])
+                ["Mas vendidos", "Mejor rating", "Precio mayor", "Precio menor"])
         
         # Tabla de productos
         df_productos = st.session_state.contenidos.copy()
         if filtro_cat_admin != "Todas":
             df_productos = df_productos[df_productos['cat'] == filtro_cat_admin]
         
-        if ordenar_admin == "Más vendidos":
+        if ordenar_admin == "Mas vendidos":
             df_productos = df_productos.sort_values('ventas', ascending=False)
         elif ordenar_admin == "Mejor rating":
             df_productos = df_productos.sort_values('rating', ascending=False)
@@ -878,32 +916,32 @@ elif menu == "⚙️ Admin Dashboard":
             use_container_width=True,
             num_rows="dynamic",
             column_config={
-                "titulo": st.column_config.TextColumn("Título", width="large"),
-                "cat": st.column_config.SelectboxColumn("Categoría", 
+                "titulo": st.column_config.TextColumn("Titulo", width="large"),
+                "cat": st.column_config.SelectboxColumn("Categoria", 
                     options=list(st.session_state.contenidos['cat'].unique())),
                 "precio": st.column_config.NumberColumn("Precio", format="$%d"),
                 "ventas": st.column_config.NumberColumn("Ventas"),
-                "rating": st.column_config.NumberColumn("Rating", format="%.1f ⭐")
+                "rating": st.column_config.NumberColumn("Rating", format="%.1f")
             }
         )
     
     # TAB 4: Transacciones
     with tab4:
-        st.subheader("💰 Historial de Transacciones")
+        st.subheader("Historial de Transacciones")
         
-        # Métricas
+        # Metricas
         col1, col2, col3, col4 = st.columns(4)
         completadas = st.session_state.transacciones[st.session_state.transacciones['estado'] == 'Completada']
         pendientes = st.session_state.transacciones[st.session_state.transacciones['estado'] == 'Pendiente']
         
         with col1:
-            st.metric("💰 Total Recaudado", f"${completadas['monto'].sum():,}")
+            st.metric("Total Recaudado", f"${completadas['monto'].sum():,}")
         with col2:
-            st.metric("✅ Completadas", len(completadas))
+            st.metric("Completadas", len(completadas))
         with col3:
-            st.metric("⏳ Pendientes", len(pendientes))
+            st.metric("Pendientes", len(pendientes))
         with col4:
-            st.metric("💵 Monto Pendiente", f"${pendientes['monto'].sum():,}")
+            st.metric("Monto Pendiente", f"${pendientes['monto'].sum():,}")
         
         st.divider()
         
@@ -912,7 +950,7 @@ elif menu == "⚙️ Admin Dashboard":
         with col1:
             filtro_estado_trans = st.selectbox("Estado", ["Todas", "Completada", "Pendiente"])
         with col2:
-            filtro_metodo = st.selectbox("Método de pago", ["Todos", "Transferencia", "WebPay"])
+            filtro_metodo = st.selectbox("Metodo de pago", ["Todos", "Transferencia", "WebPay"])
         with col3:
             buscar_comprador = st.text_input("Buscar comprador")
         
@@ -931,57 +969,56 @@ elif menu == "⚙️ Admin Dashboard":
                 col1, col2, col3, col4, col5 = st.columns([2, 2, 1, 1, 1])
                 with col1:
                     st.markdown(f"**{row['comprador']}**")
-                    st.caption(f"📅 {row['fecha']}")
+                    st.caption(f"{row['fecha']}")
                 with col2:
                     producto = st.session_state.contenidos[st.session_state.contenidos['id'] == row['producto_id']]
                     if len(producto) > 0:
-                        st.markdown(f"📦 {producto.iloc[0]['titulo'][:30]}...")
+                        st.markdown(f"{producto.iloc[0]['titulo'][:30]}...")
                 with col3:
                     st.markdown(f"**${row['monto']:,}**")
                 with col4:
-                    estado_emoji = "✅" if row['estado'] == "Completada" else "⏳"
-                    st.markdown(f"{estado_emoji} {row['estado']}")
+                    st.markdown(f"{row['estado']}")
                 with col5:
                     if row['estado'] == "Pendiente":
-                        if st.button("✅ Confirmar", key=f"conf_{i}"):
+                        if st.button("Confirmar", key=f"conf_{i}"):
                             st.session_state.transacciones.at[i, 'estado'] = "Completada"
-                            st.success("¡Transacción confirmada!")
+                            st.success("Transaccion confirmada!")
                             st.rerun()
                 st.divider()
         
         # Exportar datos
-        if st.button("📥 Exportar a CSV"):
+        if st.button("Exportar a CSV"):
             csv = st.session_state.transacciones.to_csv(index=False)
             st.download_button(
-                "💾 Descargar CSV",
+                "Descargar CSV",
                 csv,
                 "transacciones.csv",
                 "text/csv"
             )
     
-    # TAB 5: Configuración
+    # TAB 5: Configuracion
     with tab5:
-        st.subheader("⚙️ Configuración de la Plataforma")
+        st.subheader("Configuracion de la Plataforma")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("### 💳 Configuración de Pagos")
+            st.markdown("### Configuracion de Pagos")
             st.text_input("Cuenta bancaria", value="12345678", key="cuenta_banco")
             st.text_input("RUT empresa", value="12.345.678-9", key="rut_empresa")
             st.text_input("Email de notificaciones", value="pagos@ahorasi.cl", key="email_pagos")
-            st.number_input("Comisión plataforma (%)", value=10, min_value=0, max_value=50, key="comision")
+            st.number_input("Comision plataforma (%)", value=10, min_value=0, max_value=50, key="comision")
         
         with col2:
-            st.markdown("### 📱 Configuración WhatsApp")
-            st.text_input("Número principal", value="56912345678", key="wsp_principal")
+            st.markdown("### Configuracion WhatsApp")
+            st.text_input("Numero principal", value="56912345678", key="wsp_principal")
             st.text_area("Mensaje de bienvenida", 
-                value="¡Hola! Gracias por contactar a AhoraSI Marketplace. ¿En qué podemos ayudarte?",
+                value="Hola! Gracias por contactar a AhoraSI Marketplace. En que podemos ayudarte?",
                 key="msg_bienvenida")
         
         st.divider()
         
-        st.markdown("### 🎨 Personalización")
+        st.markdown("### Personalizacion")
         col1, col2, col3 = st.columns(3)
         with col1:
             st.color_picker("Color primario", value="#667eea", key="color_primario")
@@ -992,42 +1029,42 @@ elif menu == "⚙️ Admin Dashboard":
         
         st.divider()
         
-        st.markdown("### 📧 Plantillas de Email")
+        st.markdown("### Plantillas de Email")
         plantilla = st.selectbox("Seleccionar plantilla", 
-            ["Bienvenida nuevo usuario", "Confirmación de pago", "Suscripción por vencer", "Recordatorio de pago"])
+            ["Bienvenida nuevo usuario", "Confirmacion de pago", "Suscripcion por vencer", "Recordatorio de pago"])
         st.text_area("Contenido de la plantilla", 
             value="Estimado {nombre},\n\nGracias por ser parte de AhoraSI Marketplace...",
             height=150)
         
         col1, col2 = st.columns(2)
         with col1:
-            if st.button("💾 Guardar Configuración", type="primary", use_container_width=True):
-                st.success("✅ Configuración guardada exitosamente")
+            if st.button("Guardar Configuracion", type="primary", use_container_width=True):
+                st.success("Configuracion guardada exitosamente")
         with col2:
-            if st.button("🔄 Restaurar valores por defecto", use_container_width=True):
+            if st.button("Restaurar valores por defecto", use_container_width=True):
                 st.info("Valores restaurados")
         
         st.divider()
         
         # Herramientas de mantenimiento
-        st.markdown("### 🛠️ Herramientas de Mantenimiento")
+        st.markdown("### Herramientas de Mantenimiento")
         col1, col2, col3 = st.columns(3)
         with col1:
-            if st.button("🗑️ Limpiar caché", use_container_width=True):
+            if st.button("Limpiar cache", use_container_width=True):
                 st.cache_data.clear()
-                st.success("Caché limpiado")
+                st.success("Cache limpiado")
         with col2:
-            if st.button("📊 Generar reporte", use_container_width=True):
+            if st.button("Generar reporte", use_container_width=True):
                 st.info("Generando reporte...")
         with col3:
-            if st.button("🔒 Backup de datos", use_container_width=True):
+            if st.button("Backup de datos", use_container_width=True):
                 st.success("Backup creado: backup_2024-03-15.json")
 
 # Footer
 st.divider()
 st.markdown("""
 <div style='text-align: center; color: gray; padding: 20px;'>
-    <p>🚀 <strong>AhoraSI Marketplace</strong> v2.0</p>
-    <p>Creado con ❤️ en Chile | © 2024</p>
+    <p><strong>AhoraSI Marketplace</strong> v2.0</p>
+    <p>Creado en Chile | 2024</p>
 </div>
 """, unsafe_allow_html=True)
